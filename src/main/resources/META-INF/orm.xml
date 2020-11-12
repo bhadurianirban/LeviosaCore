@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" version="2.0">
+
+    <named-query name="TermMetaData.findByTermInstanceSlugAndTermSlug">
+        <query>SELECT t FROM TermInstance t WHERE t.termInstancePK.termSlug = :termMetaTermSlug and t.termInstancePK.termInstanceSlug = :termInstanceSlug</query>
+    </named-query>
+    <named-query name="TermMetaData.findDistinctInstanceSlugs">
+        <query>SELECT DISTINCT t.termInstancePK.termInstanceSlug termInstance FROM TermInstance t where t.termInstancePK.termSlug=:termSlug</query>
+    </named-query>    
+    <named-query name="TermMetaData.findByTermMetaKeyAndTermSlug">
+        <query>SELECT t FROM TermInstance t WHERE t.termInstancePK.termSlug = :termMetaTermSlug and t.termInstancePK.metaKey = :termMetaKey</query>
+    </named-query>
+    
+    <named-query name="TermMeta.findOrderedMeta">
+        <query>SELECT t FROM TermMeta t WHERE t.termMetaPK.termSlug = :termSlug ORDER BY t.displayPriority</query>
+    </named-query>
+    <named-query name="TermMeta.findBySelectOne">
+        <query>SELECT t FROM TermMeta t where t.dataType = :dataType and t.manyToOneTermSlug = :manyToOneTerm</query>
+    </named-query>
+    <named-query name="TermMetaData.findByTermMetaTermSlug">
+        <query>SELECT t FROM TermInstance t WHERE t.termInstancePK.termSlug = :termMetaTermSlug ORDER BY t.termInstancePK.termInstanceSlug</query>
+    </named-query>
+    <named-query name="TermMetaData.findByMetaDataDisplayOrder">
+        <query>SELECT td FROM TermInstance td, TermMeta tm where td.termInstancePK.termSlug = :termMetaTermSlug and td.termInstancePK.termInstanceSlug = :termInstanceSlug and td.termInstancePK.termSlug = tm.termMetaPK.termSlug and td.termInstancePK.metaKey = tm.termMetaPK.metaKey order by tm.displayPriority</query>
+    </named-query>
+    <named-query name="TermMeta.findMaxDisplayPriority">
+        <query>SELECT max(t.displayPriority) FROM TermMeta t where t.termMetaPK.termSlug = :termSlug</query>
+    </named-query>
+    <named-query name="TermInstanceRelations.findByTermInstanceSlug">
+        <query>SELECT t FROM TermInstanceRelations t where t.termInstanceRelationsPK.termSlug = :termSlug and t.termInstanceRelationsPK.termMetaKey = :termMetaKey and t.termInstanceRelationsPK.termInstanceSlug = :termInstanceSlug</query>
+    </named-query>
+    <named-query name="TermInstanceRelations.findByRelatedTermInstanceSlug">
+        <query>SELECT t FROM TermInstanceRelations t where t.termInstanceRelationsPK.termInstanceRelSlug=:termInstanceRelSlug</query>
+    </named-query>
+    <named-query name="TermInstanceRelations.findByParentTermInstanceSlug">
+        <query>SELECT t FROM TermInstanceRelations t where t.termInstanceRelationsPK.termInstanceRelSlug=:parentTermInstanceSlug and t.termInstanceRelationsPK.termMetaKey = :childTermMetaKey and t.termInstanceRelationsPK.termSlug=:childTermSlug</query>
+    </named-query>    
+    <named-query name="TermMetaData.findByTermInstanceSlug">
+        <query>SELECT t FROM TermInstance t WHERE t.termInstancePK.termInstanceSlug = :termInstanceSlug</query>
+    </named-query>
+    <named-query name="TermInstance.findChildTermInstance">
+        <query>SELECT t FROM TermInstance t where t.termInstanceValue=:parentTermInstanceSlug and t.termInstancePK.metaKey=:childTermMetaKey and t.termInstancePK.termSlug=:childTermSlug</query>
+    </named-query>
+</entity-mappings>
