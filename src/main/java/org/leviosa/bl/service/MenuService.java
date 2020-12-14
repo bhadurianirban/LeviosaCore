@@ -74,7 +74,7 @@ public class MenuService {
         MenuDAO menuDAO = new MenuDAO(DatabaseConnection.EMF);
         List<Menu> menuList = menuDAO.findMenuEntities();
 
-        MenuMaker menuMaker = new MenuMaker(menuDTO.getAuthCredentials());
+        MenuMaker menuMaker = new MenuMaker(menuDTO.getHedwigAuthCredentials());
         MenuNode authorisedMenuRoot = menuMaker.getUserMenu(menuList);
         menuDTO.setResponseCode(HedwigResponseCode.SUCCESS);
         menuDTO.setRootMenuNode(authorisedMenuRoot);

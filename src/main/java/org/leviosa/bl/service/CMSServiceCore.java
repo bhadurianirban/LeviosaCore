@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManagerFactory;
 
 import org.hedwig.cloud.response.HedwigResponseCode;
-import org.hedwig.cms.constants.CMSConstants;
+import org.hedwig.leviosa.constants.CMSConstants;
 import org.leviosa.db.DAO.TermDAO;
 import org.leviosa.db.DAO.TermInstanceRelationsDAO;
 import org.leviosa.db.DAO.TermMetaDAO;

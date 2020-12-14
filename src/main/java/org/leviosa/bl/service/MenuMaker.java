@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.hedwig.cloud.dto.HedwigAuthCredentials;
 import org.hedwig.cloud.response.HedwigResponseCode;
 
-import org.hedwig.cms.constants.CMSConstants;
+import org.hedwig.leviosa.constants.CMSConstants;
 
 import org.hedwig.cms.dto.MenuNode;
 import org.hedwig.cms.dto.TermDTO;
@@ -44,7 +44,7 @@ public class MenuMaker {
         CMSService cmss = new CMSService();
         for (MenuNode menuNode : menuNodeList) {
             TermDTO termDTO = new TermDTO();
-            termDTO.setAuthCredentials(AUTH_CREDENTIALS);
+            termDTO.setHedwigAuthCredentials(AUTH_CREDENTIALS);
             termDTO.setTermSlug(menuNode.getTermSlug());
             termDTO = cmss.getTermDetails(termDTO);
             Map<String, Object> term = termDTO.getTermDetails();
@@ -131,7 +131,7 @@ public class MenuMaker {
         int roleId = AUTH_CREDENTIALS.getRoleId();
         String userRoleId = Integer.toString(roleId);
         TermDTO termDTO = new TermDTO();
-        termDTO.setAuthCredentials(AUTH_CREDENTIALS);
+        termDTO.setHedwigAuthCredentials(AUTH_CREDENTIALS);
         CMSService cmss = new CMSService();
         termDTO.setTermSlug(termSlug);
         termDTO = cmss.getTermDetails(termDTO);

@@ -16,13 +16,13 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hedwig.cloud.response.HedwigResponseCode;
-import org.hedwig.cms.constants.AWSMeta;
+import org.hedwig.leviosa.constants.AWSMeta;
 import org.hedwig.cms.dto.AwsS3DTO;
-import org.hedwig.cms.constants.CMSConstants;
+import org.hedwig.leviosa.constants.CMSConstants;
 import org.hedwig.cms.dto.MediaDTO;
 import org.hedwig.cms.dto.TermDTO;
 import org.hedwig.cms.dto.TermInstanceDTO;
-import org.hedwig.cms.constants.MediaMeta;
+import org.hedwig.leviosa.constants.MediaMeta;
 import org.hedwig.cms.dto.TermMetaDTO;
 import org.leviosa.db.DAO.TermInstanceDAO;
 import org.leviosa.db.DAO.TermMetaDAO;
@@ -236,7 +236,7 @@ public class CMSService extends CMSServiceCore {
         List<Map<String, Object>> childTermInstanceList = new ArrayList<>();
         TermInstanceDTO childTermInstanceDTO = new TermInstanceDTO();
         for (String childTermInstanceSlug : childTermInstanceSlugList) {
-            childTermInstanceDTO.setAuthCredentials(termInstanceDTO.getAuthCredentials());
+            childTermInstanceDTO.setHedwigAuthCredentials(termInstanceDTO.getHedwigAuthCredentials());
             childTermInstanceDTO.setTermInstanceSlug(childTermInstanceSlug);
             childTermInstanceDTO.setTermSlug(childTermSlug);
             childTermInstanceDTO = getTermInstance(childTermInstanceDTO);
@@ -529,7 +529,7 @@ public class CMSService extends CMSServiceCore {
         String mediaKey = String.format("%010d", mediaKeyId);
         String termInstanceSlug = convertToAlphabets(mediaKeyId);
         Map<String, Object> screenTermInstance = new HashMap<>();
-        screenTermInstance.put(MediaMeta.MEDIA_USER, termInstanceDTO.getAuthCredentials().getUserId());
+        screenTermInstance.put(MediaMeta.MEDIA_USER, termInstanceDTO.getHedwigAuthCredentials().getUserId());
         screenTermInstance.put(MediaMeta.MEDIA_NAME, "Name");
         screenTermInstance.put(MediaMeta.MEDIA_KEY, mediaKey);
         screenTermInstance.put(CMSConstants.TERM_INSTANCE_SLUG, termInstanceSlug);
@@ -547,7 +547,7 @@ public class CMSService extends CMSServiceCore {
         int seriesId = Integer.parseInt((String) mediaTermInstance.get(MediaMeta.MEDIA_KEY));
         //Getting bucket name, secret key, access key from term instance settings
         TermInstanceDTO awsCredTermInstance = new TermInstanceDTO();
-        awsCredTermInstance.setAuthCredentials(mediaDTO.getAuthCredentials());
+        awsCredTermInstance.setHedwigAuthCredentials(mediaDTO.getHedwigAuthCredentials());
         awsCredTermInstance.setTermSlug(CMSConstants.AWS_CRED_TERM_SLUG);
         awsCredTermInstance.setTermInstanceSlug("awsdefault");
         awsCredTermInstance = getTermInstance(awsCredTermInstance);
@@ -559,8 +559,8 @@ public class CMSService extends CMSServiceCore {
         //AWS S3 Bucket upload
         File tempFile = new File(tempFilePath);
         String userName = (String) mediaTermInstance.get(MediaMeta.MEDIA_USER);
-        int tenantId = mediaDTO.getAuthCredentials().getTenantId();
-        int productId = mediaDTO.getAuthCredentials().getProductId();
+        int tenantId = mediaDTO.getHedwigAuthCredentials().getTenantId();
+        int productId = mediaDTO.getHedwigAuthCredentials().getProductId();
 
         String bucketKey = "product" + productId + "/tenant" + tenantId + "/" + userName + "/" + String.format("%010d", seriesId);
         AwsS3DTO awsS3DTO = new AwsS3DTO();
@@ -579,7 +579,7 @@ public class CMSService extends CMSServiceCore {
         }
         mediaTermInstance.put(MediaMeta.MEDIA_URL, awsS3DTO.getS3bucketUrl());
         TermInstanceDTO termInstanceDTO = new TermInstanceDTO();
-        termInstanceDTO.setAuthCredentials(mediaDTO.getAuthCredentials());
+        termInstanceDTO.setHedwigAuthCredentials(mediaDTO.getHedwigAuthCredentials());
         termInstanceDTO.setTermInstance(mediaTermInstance);
         termInstanceDTO = saveTermInstance(termInstanceDTO);
         if (termInstanceDTO.getResponseCode() != HedwigResponseCode.SUCCESS) {
@@ -593,7 +593,7 @@ public class CMSService extends CMSServiceCore {
 
     public MediaDTO deleteMedia(MediaDTO mediaDTO) {
         TermInstanceDTO awsCredTermInstance = new TermInstanceDTO();
-        awsCredTermInstance.setAuthCredentials(mediaDTO.getAuthCredentials());
+        awsCredTermInstance.setHedwigAuthCredentials(mediaDTO.getHedwigAuthCredentials());
         awsCredTermInstance.setTermSlug(CMSConstants.AWS_CRED_TERM_SLUG);
         awsCredTermInstance.setTermInstanceSlug("awsdefault");
         awsCredTermInstance = getTermInstance(awsCredTermInstance);
@@ -604,8 +604,8 @@ public class CMSService extends CMSServiceCore {
 
         Map<String, Object> mediaTermInstance = mediaDTO.getMediaTermInstance();
         String userName = (String) mediaTermInstance.get(MediaMeta.MEDIA_USER);
-        int productId = mediaDTO.getAuthCredentials().getProductId();
-        int tenantId = mediaDTO.getAuthCredentials().getTenantId();
+        int productId = mediaDTO.getHedwigAuthCredentials().getProductId();
+        int tenantId = mediaDTO.getHedwigAuthCredentials().getTenantId();
         String bucketKey = "product" + productId + "/tenant" + tenantId + "/" + userName + "/" + (String) mediaTermInstance.get(MediaMeta.MEDIA_KEY);
         
         AwsS3Service awsS3Service = new AwsS3Service(accessKey, secretKey);
